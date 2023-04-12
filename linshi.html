@@ -1,0 +1,163 @@
+
+
+
+
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    
+    <style>
+        #rong{
+            border:0px solid pink;
+            width:500px;
+            margin:0 auto; 
+            
+        }
+        h3{
+            border-bottom:dashed;
+        }
+        #liuyan{
+            border:1px solid black;
+            height: 300px;
+            margin-bottom:20px;
+        }
+        h5{
+            margin-top:0px;
+        }
+        p{
+            position:relative;
+        }
+        #name{
+             width:497px;
+        }
+        #btn{
+            width:100%;
+        }
+        #neirong{
+            width:495px;
+        }
+        span{
+            position:absolute;
+            right:100px;
+        }
+        .times{
+           position:absolute;
+            right:0;
+        }
+        .yellow{
+        	background-color: yellow;
+        }
+        
+        .yc{
+        	display: none;
+        }
+    </style>
+    <script>
+    	$().ready(function(){    //准备开始函数
+    		$('#name').val($('#name').attr("defaultValue"));       //给昵称框添加默认值
+    		$('#neirong').val($('#neirong').attr("defaultValue")); //给内容框添加默认值
+    		 
+    		$('#name').focus(function(){                            //昵称框得到焦点事件
+    			if($('#name').val()==$('#name').attr('defaultValue')){    //如果昵称框的值等于默认值 
+    				$('#name').val("");                                  //昵称框的值 附空值
+    			}
+    		})
+    		
+    		$('#neirong').focus(function(){                             //内容框得到焦点事件
+    			if($('#neirong').val()==$('#neirong').attr('defaultValue')){ //如果内容框的值等于默认值 
+    				$('#neirong').val("");                                  //内容框的值 附空值
+    			}
+    		})
+    	//---------------------------------------------------------
+    	//失去焦点
+    		$('#name').blur(function(){                  //昵称框失去焦点事件
+    			if($('#name').val()==""){               //如果值等于空
+    				$('#name').val($(this).attr('defaultValue'));       //昵称框的值 附默认值
+    			}
+    		})
+    		
+    		$('#neirong').blur(function(){              //内容框失去焦点事件
+    			if($('#neirong').val()==""){            //如果值等于空
+    				$('#neirong').val($(this).attr('defaultValue'));     //内容框的值 附默认值
+    			}
+    		})
+    		//------------------------------------------------上传留言
+    		var num =0;     //这个变量 是给第几条留言的中的 “几” 全局变量
+    		$('#btn').click(function(){         //获取点击按钮
+    			num++;                          //每点击一下意味着上传了一条留言  所以num++
+    			var s=new Date();               //这个是实现 时分秒的一个实例化 
+    			var h=s.getHours();             //获取当前时间小时
+    			var m=s.getMinutes();           //获取当前时间分钟
+    			var mm=s.getSeconds();          //获取当前时间秒
+    			var ni=$('#name').val();        //获取昵称框的值
+    			var nei=$('#neirong').val();    //获取内容框的值
+                                                //这个xin 是拼接  具体怎么拼接的看下面的样式代码 （就是HTML元素那些）
+    			var xin=$("<p > <i>"+ni+":&nbsp;</i><b>&nbsp;"+nei+"</b><span class='yc' id='x'><a>删除</a><strong>第"+num+"条&nbsp;</strong></span><span class='times'>"+h+"时"+m+"分"+mm+"秒</span></p>");
+    			$('#liuyan').append(xin);       //把新拼接的内容追加到大的留言框里面就是那个height 300px  的里面  实现上传留言的操作
+    			$('em').css('display','none');  //已经有内容了，就把提示消息的css样式 display 设置为none
+    		})
+    	
+    		
+    		//--------------------------------------------------   把后面添加的元素 设置样式   
+    		$(document).on('mouseover','p',function(){            //因为上传的留言是后面添加上去的 它没有默认事件 属性 所以要使用on 这条代码意思是为p标签添加一个移入事件
+ /* 为上传的留言添加背景颜色*/   			$(this).attr('class','yellow');                     /*把这个事件的class属性 
+                                                                    取名叫做yellow 这个yellow 已经在style里面已经设置了 
+                                                                     只要这个事件激发就会创建一个类 从而style的css样式起作用*/
+ /*这个是留言信息   删除字符和时间的显示 */  $(this).find('#x').removeAttr('class','yc');  //   #x 其实是上面字符串拼接的一个<span>标签的id 留言的时间信息 及删除都是这个代码显示  			
+    		})                                                                          //为什么要 removeAttr 呢？  因为上面style已经设置了包含信息的字段不显示了   所以这里想让他显示就要移除   
+    		
+    		//-------------------------------------- 				把后面添加的元素 设置样式
+    		$(document).on('mouseout','p',function(){           //因为上传的留言是后面添加上去的 它没有默认事件 属性 所以要使用on 这条代码意思是为p标签添加一个移出事件
+    			$(this).removeAttr('class','yellow');           //当鼠标移除 就移除留言的背景颜色    
+                
+    			$(this).find('#x').attr('class','yc');         //因为移入的代码已经给 移除掉上面的style样式了 ，所以这里要重新设置一下
+    		})
+    		
+    		//----------------------------------------------------------------- 点击删除就删除
+    		$(document).on('click','a',function(){    //a标签是后面添加的 所以使用on 这个代码是把a添加yg click事件
+    			
+    			var a=confirm('是否删除')           //弹窗询问是否删除
+    			if(a){                              //如果点击 是
+    				num--;                         // 还记得这个num吗 在上面是全局变量
+    				$(this).parents().parents('p').remove();   //a 便签的第一个parents是span但是span被p包裹所以还有一个parents 找到了p段落 给移除
+    				var allstrong=$('#liuyan').find('strong');  //找到留言板中所有的 strong 存储
+    				for (var i=0; i<allstrong.length;i++) {      //i<找到的strong
+    				$(allstrong[i]).text("第"+(i+1)+"条");       //第i条 strong便签的内容 赋值为i+1条 为什么i+1呢？ 因为i是0开始
+    				}
+    					if(num==0){   //如果当num-- 变成0了 就相当于没有留言了 ，那么留言板的提示消息 显示出来
+    						$('em').css('display','block')          //设置em的display 为显示 也就是block
+    					}
+    			}
+    			
+    		})
+    	
+    	})
+    </script>
+</head>
+<body>
+    <div id="rong">
+        <h3>留言板</h3>
+        <div id="liuyan">
+            <em>留言内容</em>
+           <!--<p>
+               <i>这里是昵称</i>
+               <b>这里是内容</b>
+               <span>
+                   <a>删除</a>
+                   <strong>第一条</strong>
+               </span>
+              <span class="times">3时2分一秒</span>
+           </p>-->
+        </div>
+        <h5>昵称</h5>
+        <input type="text" id="name"  defaultValue="你的昵称"/>
+        <h5>留言内容</h5>
+        <textarea id="neirong" defaultValue="你要说得话"></textarea>
+       <input type="button" value="提交" id="btn" />
+    </div>
+</body>
+</html>
+
+
+
